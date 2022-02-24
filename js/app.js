@@ -3,13 +3,15 @@ let taskInput = document.querySelector("#newTaskInp");
 let taskAddBtn = document.querySelector("#taskAddBtn");
 let taskList = document.querySelector(".task_list");
 let confirmBtn = document.querySelector("#confirm-btn");
+let errorMsg = document.querySelector("#error")
 taskAddBtn.addEventListener("click", function (e) {
   let newTaskInp = taskInput.value;
   if (!newTaskInp) {
-    alert("Please select a new task");
+    errorMsg.textContent = "Please give a value in the input"
   } else {
     //clear input value
     taskInput.value = "";
+    errorMsg.textContent = "";
     addNewTask(newTaskInp);
   }
 });
