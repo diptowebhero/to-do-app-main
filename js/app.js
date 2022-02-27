@@ -5,15 +5,16 @@ let taskList = document.querySelector(".task_list");
 let confirmBtn = document.querySelector("#confirm-btn");
 let errorMsg = document.querySelector("#error");
 taskAddBtn.addEventListener("click", function (e) {
-  let newTaskInp = taskInput.value.toUpperCase().trim();;
+  let newTaskInp = taskInput.value.trim();;
   if (!newTaskInp || newTaskInp.length < 0) {
     errorMsg.textContent = "Please give a value in the input";
-  } else {
+    return newTaskInp
+  }
     //clear input value
     taskInput.value = "";
     errorMsg.textContent = "";
     addNewTask(newTaskInp);
-  }
+  
 });
 
 function addNewTask(text) {
