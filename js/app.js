@@ -5,16 +5,15 @@ let taskList = document.querySelector(".task_list");
 let confirmBtn = document.querySelector("#confirm-btn");
 let errorMsg = document.querySelector("#error");
 taskAddBtn.addEventListener("click", function (e) {
-  let newTaskInp = taskInput.value.trim();;
+  let newTaskInp = taskInput.value.trim();
   if (!newTaskInp || newTaskInp.length < 0) {
     errorMsg.textContent = "Please give a value in the input";
-    return newTaskInp
+    return newTaskInp;
   }
-    //clear input value
-    taskInput.value = "";
-    errorMsg.textContent = "";
-    addNewTask(newTaskInp);
-  
+  //clear input value
+  taskInput.value = "";
+  errorMsg.textContent = "";
+  addNewTask(newTaskInp);
 });
 
 function addNewTask(text) {
@@ -27,15 +26,18 @@ function addNewTask(text) {
     <button class="delete-btn">Delete</button>
     `;
   taskList.appendChild(div);
-  const tasks = getDataLocalStorage();
+
   let unique = text;
+  let tasks = getTaskFromLocalStorage();
+
   tasks.forEach((task) => {
     if (task.trim() === text) {
       unique += " ";
     }
   });
+
   tasks.push(unique);
-  setDataLocalStorage(tasks);
+  setTaskInLocalStorage(tasks);
 }
 
 //update,delete,confirm method
@@ -52,16 +54,17 @@ taskList.addEventListener("click", function (e) {
 //delete task
 const deleteTask = (e) => {
   e.target.parentElement.remove();
-  let task = e.target.parentElement.firstElementChild.innerHTML;
-  deleteTaskFormLocalStorage(task);
+  const taskName = e.target.parentElement.firstElementChild.innerText;
+  deleteTaskFromLocalStorage(taskName);
 };
 
 //delete task form local storage
-const deleteTaskFormLocalStorage = (taskName) => {
-  let task = getDataLocalStorage();
-  let index = task.indexOf(taskName);
-  task.splice(index, 1);
-  setDataLocalStorage(task);
+const deleteTaskFromLocalStorage = (taskName) => {
+  let tasks = getTaskFromLocalStorage();
+  let index = tasks.indexOf(taskName);
+  console.log(index);
+  tasks.splice(index, 1);
+  setTaskInLocalStorage(tasks);
 };
 
 //confirm task
@@ -88,6 +91,11 @@ const editTask = (e) => {
       li.innerHTML = "";
       li.textContent = updateValue;
       e.target.style.display = "inline";
+
+      const tasks = getTaskFromLocalStorage();
+      const index = tasks.indexOf(previousTask);
+      tasks.splice(index, 1, updateValue);
+      setTaskInLocalStorage(tasks);
     }
   });
 
@@ -100,20 +108,21 @@ const editTask = (e) => {
 
   e.target.style.display = "none";
 };
+
 //local storage
 window.onload = (e) => {
-  let tasks = getDataLocalStorage();
+  const tasks = getTaskFromLocalStorage();
   tasks.forEach((task) => {
     showTask(task);
   });
 };
 
 //get task in local storage
-let getDataLocalStorage = () => {
+const getTaskFromLocalStorage = () => {
   let task;
-  const item = localStorage.getItem("task");
-  if (item) {
-    task = JSON.parse(item);
+  const data = localStorage.getItem("task");
+  if (data) {
+    task = JSON.parse(data);
   } else {
     task = [];
   }
@@ -121,19 +130,19 @@ let getDataLocalStorage = () => {
 };
 
 //set task in local storage
-const setDataLocalStorage = (task) => {
+const setTaskInLocalStorage = (task) => {
   localStorage.setItem("task", JSON.stringify(task));
 };
 
 //show task
-let showTask = (task) => {
+const showTask = (task) => {
   let div = document.createElement("div");
   div.className = "item";
   div.innerHTML = `
-    <li>${task}</li>
+  <li>${task}</li>
     <button class="edit-btn">Edit</button>
     <button class="confirm-btn">Confirm</button>
     <button class="delete-btn">Delete</button>
-    `;
+  `;
   taskList.appendChild(div);
 };
